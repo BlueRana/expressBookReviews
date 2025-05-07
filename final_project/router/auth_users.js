@@ -54,17 +54,29 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
  const isbn = req.params.isbn;
  let filtered_book = books[isbn]
  if (filtered_book) {
-    let review = req.query.reaview;
+    let review = req.query.review;
     let reviewer = req.session.authorization['username'];
     if(review){
-        filtered_book['reviews'][reviewer] =review;
+        filtered_book['reviews'][reviewer] = review;
         books[isbn] = filtered_book;
     }
-    res.send('the review for the with ISBN ${isbn} has been added/updayed.');
+    res.send(`The review for the with ISBN ${isbn} has been added/updated.`);
  }else{
     res.send ("Unable to find this ISBN!");
  }
 });
+
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+ const isbn = req.params.isbn;
+ let reviewer = req.session.authorization['username'];
+    if(filtered_book[review]){
+        // Delete review with isbn based on reviewer
+        delete filtered_book[reviewer];
+        res.send(`The review for ISBN ${isbn} post by user ${reviewer} has been deleted.`);
+    }else {
+        res.send("Can't delete, as this review has been posted by a differnet user")
+ }});
+
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
