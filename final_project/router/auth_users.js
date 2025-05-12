@@ -33,7 +33,7 @@ const authenticatedUser = (username,password)=>{ //returns boolean
 }
 
 // Code from PracticeProject - index - Login endpoint
-// nly registered users can login
+// Only registered users can login
 regd_users.post("/login", (req,res) => {
  const username = req.body.username;
     const password = req.body.password;
@@ -48,7 +48,7 @@ regd_users.post("/login", (req,res) => {
         // Generate JWT access token
         let accessToken = jwt.sign({
             data: password
-        }, 'access', { expiresIn: 60 * 60 }); // 60 * 60
+        }, 'access', { expiresIn: 60 * 60 }); 
 
         // Store access token and username in session
         req.session.authorization = {
@@ -63,26 +63,26 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
  const isbn = req.params.isbn;
- let filtered_book = books[isbn]
- if (filtered_book) {
-    let review = req.query.review;
-    let reviewer = req.session.authorization['username'];
+ let filtered_book = books[isbn];
+ let review = req.query.review;
+ let reviewer = req.session.authorization['username'];
     if(review){
         filtered_book['reviews'][reviewer] = review;
         books[isbn] = filtered_book;
-    }
-    res.send(`The review for the with ISBN ${isbn} has been added/updated.`);
+        res.send(`The review for the with ISBN ${isbn} has been added/updated.`);
  }else{
     res.send ("Unable to find this ISBN!");
  }
 });
 
+//Deete a book review
 regd_users.delete("/auth/review/:isbn", (req, res) => {
  const isbn = req.params.isbn;
  let reviewer = req.session.authorization['username'];
-    if(filtered_book[review]){
+ let filtered_review = books[isbn]['reviews'];
+    if(filtered_review[reviewer]){
         // Delete review with isbn based on reviewer
-        delete filtered_book[reviewer];
+        delete filtered_review[reviewer];
         res.send(`The review for ISBN ${isbn} post by user ${reviewer} has been deleted.`);
     }else {
         res.send("Can't delete, as this review has been posted by a differnet user")

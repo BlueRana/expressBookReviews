@@ -72,7 +72,6 @@ public_users.get('/title/:title',function (req, res) {
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
   const isbn = req.params.isbn;
   res.send(books[isbn]["reviews"])
 });
