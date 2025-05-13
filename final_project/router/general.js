@@ -25,11 +25,19 @@ public_users.post("/register", (req,res) => {
     return res.status(404).json({message: "Unable to register user."});
 });
 
+// Task 10
+// Get the book list available in the shop
+public_users.get('/',function (req, res) {
+
+});
+
+{/* Task 1
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
     // Send JSON response with formatted books data
   res.send(JSON.stringify({books}, null, 4));
 });
+*/}
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
