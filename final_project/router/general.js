@@ -27,13 +27,22 @@ public_users.post("/register", (req,res) => {
 
 // Task 10
 // Get the book list available in the shop by promise
-public_users.get('/books',function (req, res) {
-    const get_books = new Promise((resolve, reject) => {
-        resolve(res.send(JSON.stringify({books}, null, 4)));
-      });
-      get_books.then(() => console.log("Books Found"));
-      get_books.catch(() => console.og('No Books Found'));
+public_users.get('/', function (req, res) {   
+    const getAllBooks = new Promise((resolve, reject) => {
+        try {  
+            const get_books = res.send(JSON.stringify({books}, null, 4));
+            resolve(get_books)
+        } catch (error) {
+            reject(res.status(500).json({ message: "No Books Found" }));
+        }
     });
+    console.log (getAllBooks);
+
+    getAllBooks.then(
+        (get_books) => console.log(get_books),
+        (error) => console.log('No Books Found')
+    );
+});
 
 {/* Task 1
 // Get the book list available in the shop
