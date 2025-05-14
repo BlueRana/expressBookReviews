@@ -4,6 +4,7 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
+
 // Register a new user
 // Code from PracticeProject - index - app.post(/"register"...
 public_users.post("/register", (req,res) => {
@@ -31,14 +32,16 @@ public_users.get('/', function (req, res) {
     const getAllBooks = new Promise((resolve, reject) => {
         try {  
             const get_books = res.send(JSON.stringify({books}, null, 4));
-            resolve(get_books)
-            console.log("Books Found")
+            resolve(get_books);
         } catch (error) {
-            reject(res.status(500).json({ message: "No Books Found" }));
-            console.error("Error while getting book list:", error);
-
+            reject(error);
         }
-});
+    });
+    
+    getAllBooks.then(
+       (get_books) => console.log("Books Found"),
+       (error) => console.error(res.status(500).json({ message: "No Books Found" }))
+    );
 });
 
 {/* Task 1
@@ -49,13 +52,35 @@ public_users.get('/',function (req, res) {
 });
 */}
 
+//Task 11
+// Get book details based on ISBN
+const axios = require('axios'); //added for task 11
+
+public_users.get('/isbn/:isbn',function (req, res) {
+      const connectToURL = (url) =>{
+        const req = axios.get(url);
+        const isbn = req.params.isbn;
+        isbn.then(response =>{
+      // Retrieve the isbn parameter from the request URL and send the corresponding isbn's details
+        res.send(books[isbn]);
+      })
+      .catch (error =>{
+        console.error('Error fetching books', error);
+        res.status(500).send('Error fetching books');
+      })
+ }});
+ connectToURL("https://bluefrog79sl-5000.theianext-1-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai//isbn/:isbn'");
+ connectToURL("https://bluefrog79sl-5000.theianext-1-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai//isbn/:isbn'");
+
+{/* Task 2
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
       // Retrieve the isbn parameter from the request URL and send the corresponding isbn's details
 const isbn = req.params.isbn;
   res.send(books[isbn])
  });
-  
+*/}
+
 // Get book details based on author
 public_users.get('/author/:author', function (req, res) {
   let booksbyauthor = [];
