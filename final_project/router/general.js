@@ -2,7 +2,9 @@ const express = require('express');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
+const axios = require("axios"); //Requiring axois module to make Http request Task 11
 const public_users = express.Router();
+
 
 
 // Register a new user
@@ -53,24 +55,24 @@ public_users.get('/',function (req, res) {
 */}
 
 //Task 11
-// Get book details based on ISBN
-const axios = require('axios'); //added for task 11
-
-public_users.get('/isbn/:isbn',function (req, res) {
-      const connectToURL = (url) =>{
-        const req = axios.get(url);
-        const isbn = req.params.isbn;
-        isbn.then(response =>{
-      // Retrieve the isbn parameter from the request URL and send the corresponding isbn's details
-        res.send(books[isbn]);
-      })
-      .catch (error =>{
-        console.error('Error fetching books', error);
-        res.status(500).send('Error fetching books');
-      })
- }});
- connectToURL("https://bluefrog79sl-5000.theianext-1-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai//isbn/:isbn'");
- connectToURL("https://bluefrog79sl-5000.theianext-1-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai//isbn/:isbn'");
+// Get book details based on ISBN with async/await with axios
+// Make sure to install axois in package.json command npm install axios
+public_users.get('/isbn/:isbn', async function (req, res) {
+    const isbn = req.params.isbn;
+    
+    try{   
+        // const response = await axios.get(url)
+        const response = await axios.get("https://bluefrog79sl-5000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai");
+        if (response){
+            return res.status(200).send(books[isbn])
+            }else {
+            return res.status(404).send(`No book found with ISBN ${isbn}`);
+        }
+    }catch(error){
+        console.error(error);
+        return res.status(500).send("Interal Server Error");
+    }
+});
 
 {/* Task 2
 // Get book details based on ISBN
