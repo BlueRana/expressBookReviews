@@ -58,19 +58,17 @@ public_users.get('/',function (req, res) {
 // Get book details based on ISBN with async/await with axios
 // Make sure to install axois in package.json command npm install axios
 public_users.get('/isbn/:isbn', async function (req, res) {
-    
+    let isbn = req.params.isbn;
     try{  
-        let isbn = req.params.isbn;
         // const response = await axios.get(url)
         const response = await axios.get("https://bluefrog79sl-5000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai");
         const bookISBN = books[isbn];
         if(bookISBN && response){
-            
             return res.status(200).send(books[isbn]),
             console.log(`Book with ISBN ${isbn}`);
             }else{
-            
-            return res.status(404).send(`No book found with ISBN ${isbn}`);
+            return res.status(404).send(`No book found with ISBN ${isbn}`),
+            console.log(`No book with ISBN ${isbn}`);
         }
     }catch(error){
         console.error(error);
