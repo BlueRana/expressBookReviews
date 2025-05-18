@@ -74,6 +74,7 @@ public_users.get('/isbn/:isbn', async function (req, res) {
         console.error(error);
         return res.status(500).send("Interal Server Error");
     }
+    
 });
 
 {/* Task 2
@@ -88,22 +89,34 @@ const isbn = req.params.isbn;
 //Task 12
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-    const author = req.params.author;
-    let booksByAuthor = [];
-    let isbns = Object.keys(books);
-    isbns.forEach(isbn => {
-        //.toLowerCase() is needed so [] of unknown authors will be returned
-        if(books[isbn]['author'].toLowerCase() === author.toLowerCase()){
-            booksByAuthor.push({
-                "author": books[isbn]["author"],
-                "isbn": isbn,
-                "title": books[isbn]["title"],
-                "reviews": books[isbn]["reviews"]
-              });
+        new Promise((resolve, reject) => {
+        const author = req.params.author;
+        let booksByAuthor = [];
+        let isbns = Object.keys(books); 
+        isbns.forEach(isbn => {
+            //.toLowerCase() is needed so [] of unknown authors will be returned
+            if(books[isbn]['author'].toLowerCase() === author.toLowerCase()){
+                booksByAuthor.push({
+                    "author": books[isbn]["author"],
+                    "isbn": isbn,
+                    "title": books[isbn]["title"],
+                    "reviews": books[isbn]["reviews"]
+                  });
+                }
+            })
+        try {
+            if(isbns){
+                resolve(res.send(JSON.stringify({booksByAuthor}, null, 4)));
+            }else{
+                resolve(res.status(404).send(`No book found by the name ${author}`))
+            }
+        }catch{
+            reject(res.status(500).send("Interal Server Error"));
         }
-    });
-    res.send(JSON.stringify({booksByAuthor}, null, 4));
-});
+       })
+    })
+
+
 
 
 {/* Task 3
