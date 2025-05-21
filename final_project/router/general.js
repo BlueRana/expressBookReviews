@@ -58,10 +58,9 @@ public_users.get('/',function (req, res) {
 // Get book details based on ISBN with async/await with axios
 // Make sure to install axois in package.json command npm install axios
 public_users.get('/isbn/:isbn', async function (req, res) {
-    let isbn = req.params.isbn;
     try{  
         // const response = await axios.get(url)
-        const response = await axios.get("https://bluefrog79sl-5000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai");
+        const response = await axios.get("http://localhost:5000");
         const bookISBN = books[isbn];
         if(bookISBN && response){
             return res.status(200).send(books[isbn]),
@@ -89,32 +88,37 @@ const isbn = req.params.isbn;
 //Task 12
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-        new Promise((resolve, reject) => {
-        const author = req.params.author;
+const get_ByAuthor =new Promise ((resolve,reject) => {
+    try{
+        const author = req.params.author.toLowerCase();
         let booksByAuthor = [];
-        let isbns = Object.keys(books); 
-        isbns.forEach(isbn => {
+
+        Object.keys(books).forEach((isbn) => {
             //.toLowerCase() is needed so [] of unknown authors will be returned
-            if(books[isbn]['author'].toLowerCase() === author.toLowerCase()){
+            if(books[isbn].author.toLowerCase() === author){
                 booksByAuthor.push({
-                    "author": books[isbn]["author"],
-                    "isbn": isbn,
-                    "title": books[isbn]["title"],
-                    "reviews": books[isbn]["reviews"]
-                  });
-                }
-            })
-        try {
-            if(isbns){
-                resolve(res.send(JSON.stringify({booksByAuthor}, null, 4)));
-            }else{
-                resolve(res.status(404).send(`No book found by the name ${author}`))
+                "isbn": isbn,
+                "author": books[isbn]["author"],
+                "title": books[isbn]["title"],
+                "reviews": books[isbn]["reviews"],
+                });
+            
             }
-        }catch{
-            reject(res.status(500).send("Interal Server Error"));
-        }
-       })
-    })
+        });
+        resolve(res.json({booksByAuthor},null, 4));
+  
+        
+    }
+    
+    catch(error){
+        reject(error);
+    }
+    });
+    get_ByAuthor.then(
+       (booksByAuthor) => console.log("Books Found"),
+       (error) => console.error(res.status(500).send("Interal Server Error"))
+    );
+    });
 
 
 
@@ -122,21 +126,22 @@ public_users.get('/author/:author',function (req, res) {
 {/* Task 3
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-    const author = req.params.author;
+const author = req.params.author.toLowerCase();
     let booksByAuthor = [];
     let isbns = Object.keys(books);
+
     isbns.forEach(isbn => {
         //.toLowerCase() is needed so [] of unknown authors will be returned
         if(books[isbn]['author'].toLowerCase() === author.toLowerCase()){
             booksByAuthor.push({
+                 "isbn": isbn,
                 "author": books[isbn]["author"],
-                "isbn": isbn,
                 "title": books[isbn]["title"],
                 "reviews": books[isbn]["reviews"]
               });
         }
     });
-    res.send(JSON.stringify({booksByAuthor}, null, 4));
+    res.json({booksByAuthor});
 });
 */}
 
